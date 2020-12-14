@@ -10,6 +10,7 @@
           <v-btn
             href="/finalizar"
             color="primary"
+            @click="finalizarCompra"
             class="mx-auto large black--text"
           >
             Finalizar
@@ -21,6 +22,7 @@
 </template>
 
 <script>
+
 export default {
   name: "Cart",
   props: ['totalPrice', 'totalProducts'],

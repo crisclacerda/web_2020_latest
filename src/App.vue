@@ -51,8 +51,7 @@
         color="primary"
       >
         <span>Carrinho</span>
-        <!-- Tentar deixar dinâmico o número de produtos no ícone do carrinho -->
-        <v-badge :content="nitens" :value="nitens" color="#4dd0e1">
+        <v-badge v-if="$route.name !== 'Usuarios' && $route.name !== 'Estoque'" :content="totalProducts" :value="totalProducts" color="#4dd0e1">
           <!--v-badge :content="nitens" :value="nitens" content="numberItensCart()" value="1" color="#4dd0e1"-->
           <v-icon>mdi-cart</v-icon>
         </v-badge>
@@ -157,6 +156,8 @@
 <script>
 import axios from 'axios';
 import AuthService from './services/auth'
+import Carrinho from './services/cart'
+
 
 export default {
   name: "App",
@@ -166,10 +167,19 @@ export default {
     },
     administador() {
       return AuthService.isAdmin()
-    }
+    },
+    totalProducts() {
+      const carrinho = Carrinho.getCarrinho()
+      let totalQuantity = 0
+      for (const quantity of carrinho.values()) {
+        totalQuantity += quantity
+      }
+      return totalQuantity
+    },
   },
   data() {
     return {
+      productsInCart: [],
       busca: "",
       navigationStyles: {
         fontSize: "1.0em",
@@ -291,18 +301,7 @@ export default {
       this.$store.dispatch("reduceFont");
     },
   },
-  async beforeCreate() {
-    this.nitens = await numberItensCart();
-  }
 };
-
-async function numberItensCart() {
-  const response = await axios.get("http://localhost:3000/api/carrinho");
-
-  const products = response.data;
-  
-  return products.length;
-}
 </script>
 
 
